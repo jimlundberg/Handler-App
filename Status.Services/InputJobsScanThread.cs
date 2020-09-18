@@ -197,7 +197,7 @@ namespace Status.Services
                     }
                 });
 
-                TimeSpan timeSpan = TimeSpan.FromMilliseconds(StaticClass.ADD_TASK_DELAY);
+                TimeSpan timeSpan = TimeSpan.FromMilliseconds(StaticClass.DELETE_TASK_DELAY);
                 if (!AddTask.Wait(timeSpan))
                 {
                     StaticClass.Logger.LogError("InputJobScanThread Run Job {0} timed out at {1:HH:mm:ss.fff}", job, DateTime.Now);
