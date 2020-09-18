@@ -18,7 +18,7 @@ namespace Status.Services
         public const int STARTING_TCP_IP_WAIT = 15000;
         public const int POST_PROCESS_WAIT = 10000;
         public const int DIRECTORY_RECEIVE_WAIT = 7500;
-        public const int FILE_RECEIVE_WAIT = 2000;
+        public const int FILE_RECEIVE_WAIT = 1000;
         public const int WAIT_FOR_FILES_TO_COMPLETE = 2500;
         public const int DISPLAY_PROCESS_DATA_WAIT = 45000;
         public const int DISPLAY_PROCESS_TITLE_WAIT = 1000;
@@ -146,7 +146,7 @@ namespace Status.Services
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns>Returns if file is ready to access</returns>
-        public static bool IsFileReady(string fileName)
+        public static bool CheckFileReady(string fileName)
         {
             int numOfRetries = 0;
             do
@@ -186,7 +186,7 @@ namespace Status.Services
         /// </summary>
         /// <param name="directory"></param>
         /// <returns>Returns if file is ready to access</returns>
-        public static bool IsDirectoryReady(string directory)
+        public static bool CheckDirectoryReady(string directory)
         {
             // Get directory info
             DirectoryInfo dirInfo = new DirectoryInfo(directory);
@@ -216,7 +216,7 @@ namespace Status.Services
         {
             Dictionary<string, bool> files = new Dictionary<string, bool>();
             bool filesAreReady = false;
-            if (IsDirectoryReady(directory))
+            if (CheckDirectoryReady(directory))
             {
                 string[] directoryList = Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories);
                 int numRetries = 0;
@@ -230,7 +230,7 @@ namespace Status.Services
                     {
                         foreach (string file in directoryList)
                         {
-                            files.Add(file, IsFileReady(file));
+                            files.Add(file, CheckFileReady(file));
                         }
 
                         // Check that all files are accessable

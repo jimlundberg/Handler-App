@@ -62,7 +62,7 @@ namespace Status.Services
         {
             // Wait for Job xml file to be ready
             string jobXmlFileName = jobXmlData.JobDirectory + @"\" + jobXmlData.XmlFileName;
-            if (StaticClass.IsFileReady(jobXmlFileName))
+            if (StaticClass.CheckFileReady(jobXmlFileName))
             {
                 // Read Job xml file and get the top node
                 XmlDocument jobXmlDoc = new XmlDocument();
@@ -216,7 +216,7 @@ namespace Status.Services
             do
             {
                 // Check for data.xml file to be ready
-                if (StaticClass.IsFileReady(dataXmlFileName))
+                if (StaticClass.CheckFileReady(dataXmlFileName))
                 {
                     // Check if the OverallResult node exists
                     XmlDocument dataXmlDoc = new XmlDocument();
@@ -416,16 +416,6 @@ namespace Status.Services
             }
             while ((StaticClass.ProcessingJobScanComplete[job] == false) && (StaticClass.JobShutdownFlag[job] == false));
 
-            // Make sure Modeler Process is stopped
-            if (StaticClass.ProcessHandles[job].HasExited == false)
-            {
-                StaticClass.Log(string.Format("Shutting down Modeler Executable for Job {0} at {1:HH:mm:ss.fff}",
-                    job, DateTime.Now));
-
-                StaticClass.ProcessHandles[job].Kill();
-                StaticClass.ProcessHandles.Remove(job);
-            }
-
             // Wait to make sure the data.xml is done being handled
             Thread.Sleep(StaticClass.POST_PROCESS_WAIT);
 
@@ -445,8 +435,18 @@ namespace Status.Services
                 }
             }
 
-            // Wait to make sure the job files are ready to being handled
-            Thread.Sleep(StaticClass.POST_PROCESS_WAIT);
+            // Make sure Modeler Process is stopped
+            if (StaticClass.ProcessHandles[job].HasExited == false)
+            {
+                StaticClass.Log(string.Format("Shutting down Modeler Executable for Job {0} at {1:HH:mm:ss.fff}",
+                    job, DateTime.Now));
+
+                StaticClass.ProcessHandles[job].Kill();
+                StaticClass.ProcessHandles.Remove(job);
+
+                // Wait for Process to end
+                Thread.Sleep(StaticClass.SHUTDOWN_PROCESS_WAIT);
+            }
 
             // Run the Job Complete handler
             RunJobFileProcessing(job, monitorData);

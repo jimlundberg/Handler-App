@@ -214,10 +214,10 @@ namespace Status.Services
 
                     // Start an Input Buffer Job
                     StartInputJob(directory);
-                }
 
-                // Throttle the Job startups
-                Thread.Sleep(StaticClass.ScanWaitTime);
+                    // Throttle the Job startups
+                    Thread.Sleep(StaticClass.ScanWaitTime);
+                }
             }
         }
 
