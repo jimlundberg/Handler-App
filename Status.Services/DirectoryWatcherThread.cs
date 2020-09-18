@@ -42,39 +42,6 @@ namespace Status.Services
             StaticClass.DirectoryWatcherThreadHandle.Start();
         }
 
-        public bool CheckJobFilesComplete(string directory)
-        {
-            Thread.Sleep(StaticClass.FILE_RECEIVE_WAIT);
-
-            Dictionary<string, bool> files = new Dictionary<string, bool>();
-            bool areFilesReady = false;
-            if (StaticClass.IsDirectoryReady(directory))
-            {
-                string[] directoryList = Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories);
-                int numRetries = 0;
-                do
-                {
-                    if (directoryList.Length == 0)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        foreach (string file in directoryList)
-                        {
-                            files.Add(file, StaticClass.IsFileReady(file));
-                        }
-
-                        // Check that all files are accessable
-                        areFilesReady = files.ContainsValue(true);
-                    }
-                }
-                while ((areFilesReady == false) && (numRetries < StaticClass.NUM_FILE_RECEIVE_RETRIES));
-            }
-
-            return areFilesReady;
-        }
-
         // Define the event handlers.
         /// <summary>
         /// The directory created callback
@@ -93,7 +60,10 @@ namespace Status.Services
             // Do Shutdown Pause check
             if (StaticClass.ShutDownPauseCheck("Directory Watcher OnCreated") == false)
             {
-                if (CheckJobFilesComplete(jobDirectory) == true)
+                // Wait some for the directory creation and file copies to complete
+                Thread.Sleep(StaticClass.DIRECTORY_RECEIVE_WAIT);
+
+                if (StaticClass.CheckJobDirectoryComplete(jobDirectory) == true)
                 {
                     // Loop shutdown/Pause check
                     Task AddTask = Task.Run(() =>

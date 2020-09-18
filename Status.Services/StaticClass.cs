@@ -17,7 +17,8 @@ namespace Status.Services
         public const int TCP_IP_STARTUP_WAIT = 60000;
         public const int STARTING_TCP_IP_WAIT = 15000;
         public const int POST_PROCESS_WAIT = 10000;
-        public const int FILE_RECEIVE_WAIT = 5000;
+        public const int DIRECTORY_RECEIVE_WAIT = 7500;
+        public const int FILE_RECEIVE_WAIT = 2000;
         public const int WAIT_FOR_FILES_TO_COMPLETE = 2500;
         public const int DISPLAY_PROCESS_DATA_WAIT = 45000;
         public const int DISPLAY_PROCESS_TITLE_WAIT = 1000;
@@ -204,6 +205,42 @@ namespace Status.Services
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Check Job Directory is complete
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <returns></returns>
+        public static bool CheckJobDirectoryComplete(string directory)
+        {
+            Dictionary<string, bool> files = new Dictionary<string, bool>();
+            bool filesAreReady = false;
+            if (IsDirectoryReady(directory))
+            {
+                string[] directoryList = Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories);
+                int numRetries = 0;
+                do
+                {
+                    if (directoryList.Length == 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        foreach (string file in directoryList)
+                        {
+                            files.Add(file, IsFileReady(file));
+                        }
+
+                        // Check that all files are accessable
+                        filesAreReady = files.ContainsValue(true);
+                    }
+                }
+                while ((filesAreReady == false) && (numRetries < NUM_FILE_RECEIVE_RETRIES));
+            }
+
+            return filesAreReady;
         }
 
         /// <summary>

@@ -79,13 +79,13 @@ namespace Status.Services
                 // Increment the number of Processing Buffer Job files found
                 StaticClass.NumberOfProcessingFilesFound[job]++;
 
-                StaticClass.Log(string.Format("Processing File Watcher detected {0} for Job {1} file {2} of {3} at {4:HH:mm:ss.fff}",
+                StaticClass.Log(string.Format("\nProcessing File Watcher detected {0} for Job {1} file {2} of {3} at {4:HH:mm:ss.fff}",
                     jobFile, job, StaticClass.NumberOfProcessingFilesFound[job], StaticClass.NumberOfProcessingFilesNeeded[job], DateTime.Now));
 
                 // If Number of Processing files is complete
                 if (StaticClass.NumberOfProcessingFilesFound[job] == StaticClass.NumberOfProcessingFilesNeeded[job])
                 {
-                    StaticClass.Log(string.Format("Processing File Watcher detected Job {0} complete set of {1} files at {2:HH:mm:ss.fff}",
+                    StaticClass.Log(string.Format("\nProcessing File Watcher detected Job {0} complete set of {1} files at {2:HH:mm:ss.fff}",
                         job, StaticClass.NumberOfProcessingFilesNeeded[job], DateTime.Now));
 
                     // Short pause so that files from the network that are slow
