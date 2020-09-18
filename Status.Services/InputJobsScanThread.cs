@@ -102,7 +102,7 @@ namespace Status.Services
                     string directory = dirInfo.ToString();
                     string job = directory.ToString().Replace(StaticClass.IniData.InputDir, "").Remove(0, 1);
 
-                    StaticClass.Log(string.Format("\nStarting Input Job {0} at {1:HH:mm:ss.fff}", directory, DateTime.Now));
+                    StaticClass.Log(string.Format("Starting Input Job {0} at {1:HH:mm:ss.fff}", directory, DateTime.Now));
 
                     // Remove job run from Input Job directory list
                     lock (RemoveLock)

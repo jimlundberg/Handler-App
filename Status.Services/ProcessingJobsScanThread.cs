@@ -85,7 +85,7 @@ namespace Status.Services
                     string directory = dirInfo.ToString();
                     string job = directory.ToString().Replace(StaticClass.IniData.ProcessingDir, "").Remove(0, 1);
 
-                    StaticClass.Log(string.Format("\nStarting Processing Job {0} at {1:HH:mm:ss.fff}", directory, DateTime.Now));
+                    StaticClass.Log(string.Format("Starting Processing Job {0} at {1:HH:mm:ss.fff}", directory, DateTime.Now));
 
                     // Remove job run from Processing Job list
                     lock (RemoveLock)
@@ -123,7 +123,7 @@ namespace Status.Services
                 ProcessingJobsToRun.Add(job);
 
                 int index = ProcessingJobsToRun.IndexOf(job);
-                StaticClass.Log(string.Format("\nUnfinished Processing jobs check added new Job {0} to Processing Job List index {1} at {2:HH:mm:ss.fff}",
+                StaticClass.Log(string.Format("Unfinished Processing jobs check added new Job {0} to Processing Job List index {1} at {2:HH:mm:ss.fff}",
                     job, index, DateTime.Now));
             }
 
