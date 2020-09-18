@@ -1,0 +1,47 @@
+﻿@page
+@model IndexModel
+@{
+    Layout = "Shared/_Layout";
+    ViewData["Title"] = "Handler Web App";
+}
+
+@if ((string)@ViewData["PageName"] == "Start" || (string)@ViewData["PageName"] == "Refresh")
+{
+    <meta http-equiv="refresh" content="5">
+}
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/datatables.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+}
+
+@section menu {
+    <div class="btn-group" role="group">
+        <form method="post">
+            <input class="btn btn-primary" type="submit" value="Home" asp-page-handler="HomeButton" />
+            <input class="btn btn-primary" type="submit" value="Start" asp-page-handler="StartButton" disabled="@ViewData["bsStartDisabled"]" />
+            <input class="btn btn-primary" type="submit" value="Refresh" asp-page-handler="RefreshButton" disabled="@ViewData["bsRefreshDisabled"]" />
+            <input class="btn btn-primary" type="submit" value="Pause" asp-page-handler="PauseButton" disabled="@ViewData["bsPauseDisabled"]" />
+            <input class="btn btn-primary" type="submit" value="Stop" asp-page-handler="StopButton" disabled="@ViewData["bsStopDisabled"]" />
+            <input class="btn btn-primary" type="submit" value="History" asp-page-handler="HistoryButton" />
+        </form>
+    </div>
+}
+
+@if ((string)@ViewData["PageName"] != "Home")
+{
+    <div class="center">
+        @await Html.PartialAsync("_JobGrid.cshtml", Model)
+    </div>
+}
+
+<script type="text/javascript">
+    var table = $('#_rowGrid').DataTable();
+    $(document).ready(function () {
+        $('#jobGrid').dataTable({
+            fixedHeader: true
+        });
+    });
+</script>

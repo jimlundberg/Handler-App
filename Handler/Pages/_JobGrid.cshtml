@@ -1,0 +1,51 @@
+﻿@model IndexModel
+    <table id="jobGrid" class="stripe ui celled table" style="width:130%">
+        <thead class="btn-primary">
+            <tr>
+                <th>Job</th>
+                <th>Status</th>
+                <th>Time Received</th>
+                <th>Time Started</th>
+                <th>Time Completed</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.StatusData != null)
+            {
+                @foreach (var status in Model.StatusData)
+                {
+                    <tr>
+                        <td>@status.Job</td>
+                        <td>@status.JobStatus</td>
+
+                        @if (@status.TimeReceived.Year > 1)
+                        {
+                            <td>@status.TimeReceived</td>
+                        }
+                        else
+                        {
+                            <td> </td>
+                        }
+
+                        @if (@status.TimeStarted.Year > 1)
+                        {
+                            <td>@status.TimeStarted</td>
+                        }
+                        else
+                        {
+                            <td> </td>
+                        }
+
+                        @if (@status.TimeCompleted.Year > 1)
+                        {
+                            <td>@status.TimeCompleted</td>
+                        }
+                        else
+                        {
+                            <td> </td>
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
