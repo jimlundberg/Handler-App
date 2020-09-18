@@ -44,20 +44,33 @@ namespace Status.Services
 
         public bool CheckJobFilesComplete(string directory)
         {
-            Dictionary<string, bool> files = new Dictionary<string, bool>();
-            string[] directoryList = Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories);
-            int numRetries = 0;
-            bool areFilesReady;
-            do
-            {
-                foreach (string file in directoryList)
-                {
-                    files.Add(file, StaticClass.IsFileReady(file));
-                }
+            Thread.Sleep(StaticClass.FILE_RECEIVE_WAIT);
 
-                areFilesReady = files.ContainsValue(true);
+            Dictionary<string, bool> files = new Dictionary<string, bool>();
+            bool areFilesReady = false;
+            if (StaticClass.IsDirectoryReady(directory))
+            {
+                string[] directoryList = Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories);
+                int numRetries = 0;
+                do
+                {
+                    if (directoryList.Length == 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        foreach (string file in directoryList)
+                        {
+                            files.Add(file, StaticClass.IsFileReady(file));
+                        }
+
+                        // Check that all files are accessable
+                        areFilesReady = files.ContainsValue(true);
+                    }
+                }
+                while ((areFilesReady == false) && (numRetries < StaticClass.NUM_FILE_RECEIVE_RETRIES));
             }
-            while ((areFilesReady == false) && (numRetries < StaticClass.NUM_FILE_RECEIVE_RETRIES));
 
             return areFilesReady;
         }
@@ -73,6 +86,9 @@ namespace Status.Services
             string jobDirectory = e.FullPath;
             string job = jobDirectory.Replace(StaticClass.IniData.InputDir, "").Remove(0, 1);
             int index = 0;
+
+            StaticClass.Log(string.Format("\nInput Directory Watcher checking new Job {0} at {1:HH:mm:ss.fff}",
+                job, DateTime.Now));
 
             // Do Shutdown Pause check
             if (StaticClass.ShutDownPauseCheck("Directory Watcher OnCreated") == false)
@@ -92,7 +108,7 @@ namespace Status.Services
                         StaticClass.Logger.LogError("DirectoryWatcherThread Add Job {0} timed out at {1:HH:mm:ss.fff}", job, DateTime.Now);
                     }
 
-                    StaticClass.Log(string.Format("\nInput Directory Watcher added new Job {0} to Input Job list index {1} at {2:HH:mm:ss.fff}\n",
+                    StaticClass.Log(string.Format("Input Directory Watcher added new Job {0} to Input Job list index {1} at {2:HH:mm:ss.fff}",
                         job, index, DateTime.Now));
                 }
             }

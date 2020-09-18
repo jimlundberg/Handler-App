@@ -17,7 +17,7 @@ namespace Status.Services
         public const int TCP_IP_STARTUP_WAIT = 60000;
         public const int STARTING_TCP_IP_WAIT = 15000;
         public const int POST_PROCESS_WAIT = 10000;
-        public const int FILE_RECEIVE_WAIT = 15000;
+        public const int FILE_RECEIVE_WAIT = 5000;
         public const int WAIT_FOR_FILES_TO_COMPLETE = 2500;
         public const int DISPLAY_PROCESS_DATA_WAIT = 45000;
         public const int DISPLAY_PROCESS_TITLE_WAIT = 1000;
@@ -162,10 +162,9 @@ namespace Status.Services
                         }
                     }
                 }
-                catch (IOException e)
+                catch (UnauthorizedAccessException e)
                 {
-                    StaticClass.Log(string.Format("File {0} Not accessable Exception {1} at {2:HH:mm:ss.fff}",
-                        fileName, e, DateTime.Now));
+                    Log(string.Format("File {0} not available exception {1} at {2:HH:mm:ss.fff}", fileName, e, DateTime.Now));
                 }
 
                 // Check for shutdown or pause
@@ -177,6 +176,32 @@ namespace Status.Services
                 Thread.Yield();
             }
             while (numOfRetries++ < StaticClass.NUM_XML_ACCESS_RETRIES);
+
+            return false;
+        }
+
+        /// <summary>
+        /// Returns when a file is ready to access
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <returns>Returns if file is ready to access</returns>
+        public static bool IsDirectoryReady(string directory)
+        {
+            // Get directory info
+            DirectoryInfo dirInfo = new DirectoryInfo(directory);
+            try
+            {
+                // If GetDirectories works then is accessible
+                DirectoryInfo[] dirs = dirInfo.GetDirectories();
+                if (dirs != null)
+                {
+                    return true;
+                }
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return false;
+            }
 
             return false;
         }
