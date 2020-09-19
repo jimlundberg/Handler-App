@@ -96,6 +96,9 @@ namespace Status.Services
                         }
                     }
 
+                    StaticClass.Log(string.Format("Processing Directory Watcher removed Job {0} from directory list at {1:HH:mm:ss.fff}",
+                        job, DateTime.Now));
+
                     // Reset Processing file scan flag
                     StaticClass.ProcessingFileScanComplete[job] = false;
 
@@ -172,6 +175,9 @@ namespace Status.Services
                             StaticClass.Logger.LogError("ProcessingJobsScanThread failed to remove Job {0} from Processing Job list", job);
                         }
                     }
+
+                    StaticClass.Log(string.Format("Processing Directory Watcher removed Job {0} from Job list at {1:HH:mm:ss.fff}",
+                        job, DateTime.Now));
 
                     // Reset Processing job and file scan flags
                     StaticClass.ProcessingFileScanComplete[job] = false;
