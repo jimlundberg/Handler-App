@@ -1,7 +1,9 @@
 ﻿@page
 @model IndexModel
-@{ Layout = "Shared/_Layout";
-    ViewData["Title"] = "Handler Web App"; }
+@{
+    Layout = "Shared/_Layout";
+    ViewData["Title"] = "Handler Web App";
+}
 
 @if ((string)@ViewData["PageName"] == "Start" || (string)@ViewData["PageName"] == "Refresh")
 {
@@ -32,31 +34,31 @@
 
 @if ((string)@ViewData["PageName"] != "Home")
 {
-<div class="center">
-    @await Html.PartialAsync("_JobGrid.cshtml", Model)
-</div>
+    <div class="center">
+        @await Html.PartialAsync("_JobGrid.cshtml", Model)
+    </div>
 }
 
 @if ((string)@ViewData["PageName"] == "Start" || (string)@ViewData["PageName"] == "Refresh")
 {
-<script type="text/javascript">
-    var table = $('#_rowGrid').DataTable();
-    $(document).ready(function () {
-        $('#jobGrid').dataTable({
-            fixedHeader: true,
-            sort: false
+    <script type="text/javascript">
+        var table = $('#_rowGrid').DataTable();
+        $(document).ready(function () {
+            $('#jobGrid').dataTable({
+                fixedHeader: true,
+                sort: false
+            });
         });
-    });
-</script>
-}
+    </script>
+ }
 else
 {
-<script type="text/javascript">
-    var table = $('#_rowGrid').DataTable();
-    $(document).ready(function () {
-        $('#jobGrid').dataTable({
-            fixedHeader: true
+    <script type="text/javascript">
+        var table = $('#_rowGrid').DataTable();
+        $(document).ready(function () {
+            $('#jobGrid').dataTable({
+                fixedHeader: true
+            });
         });
-    });
-</script>
+    </script>
 }
